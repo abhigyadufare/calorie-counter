@@ -7,13 +7,6 @@ const output = document.getElementById("output");
 let isError = false;
 
 function cleanInputString(str) {
-  //   const strArray = str.split("");
-  //   const cleanStrArray = [];
-  //   for (let i = 0; i < strArray.length; i++) {
-  //     if (!["+", "-", " "].includes(strArray[i])) {
-  //       cleanStrArray.push(strArray[i]);
-  //     }
-  //   }
   const regex = /[+-\s]/g;
   return str.replace(regex, "");
 }
@@ -24,7 +17,6 @@ function isInvalidInput(str) {
 }
 
 function addEntry() {
-  // const targetId = "#" + entryDropdown.value;
   const targetInputContainer = document.querySelector(
     `#${entryDropdown.value} .input-container`
   );
@@ -32,11 +24,15 @@ function addEntry() {
     targetInputContainer.querySelectorAll('input[type="text"]').length + 1;
   const HTMLString = `
   <label for="${entryDropdown.value}-${entryNumber}-name">Entry ${entryNumber} Name</label>
-  <input type="text" placeholder="Name' id="${entryDropdown.value}-${entryNumber}-name" />
+  <input type="text" id="${entryDropdown.value}-${entryNumber}-name" placeholder="Name" />
   <label for="${entryDropdown.value}-${entryNumber}-calories">Entry ${entryNumber} Calories</label>
-  <input type="number" min="0" placeholder="Calories" id="${entryDropdown.value}-${entryNumber}-calories" />`;
-  // targetInputContainer.innerHTML += HTMLString;
-  targetInputContainer.innerAdjacentHTML("beforeend", HTMLString);
+  <input
+    type="number"
+    min="0"
+    id="${entryDropdown.value}-${entryNumber}-calories"
+    placeholder="Calories"
+  />`;
+  targetInputContainer.insertAdjacentHTML("beforeend", HTMLString);
 }
 
 function calculateCalories(e) {
@@ -75,25 +71,28 @@ function calculateCalories(e) {
   const remainingCalories =
     budgetCalories - consumedCalories + exerciseCalories;
   const surplusOrDeficit = remainingCalories >= 0 ? "Surplus" : "Deficit";
-  output.innerHTML = `<span class="${surplusOrDeficit.toLowerCase()}">${Math.abs(
+  output.innerHTML = `
+  <span class="${surplusOrDeficit.toLowerCase()}">${Math.abs(
     remainingCalories
   )} Calorie ${surplusOrDeficit}</span>
   <hr>
   <p>${budgetCalories} Calories Budgeted</p>
   <p>${consumedCalories} Calories Consumed</p>
-  <p>${exerciseCalories} Calories Burned</p>`;
+  <p>${exerciseCalories} Calories Burned</p>
+  `;
 
   output.classList.remove("hide");
 }
 
 function getCaloriesFromInputs(list) {
   let calories = 0;
+
   for (let i = 0; i < list.length; i++) {
     const currVal = cleanInputString(list[i].value);
     const invalidInputMatch = isInvalidInput(currVal);
 
     if (invalidInputMatch) {
-      alert(`Invalid input: "${invalidInputMatch[0]}" is not a valid number.`);
+      alert(`Invalid Input: ${invalidInputMatch[0]}`);
       isError = true;
       return null;
     }
